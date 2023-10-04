@@ -1,4 +1,5 @@
 from datetime import datetime
+from spdx_tools.spdx.constants import DOCUMENT_SPDX_ID
 from spdx_tools.spdx.model import (
     Actor,
     ActorType,
@@ -40,7 +41,7 @@ class SPDX_ShallowMerger():
 
         creation_info = CreationInfo(
             spdx_version="SPDX-2.3",
-            spdx_id=self.docnamespace + "#SPDXRef-DOCUMENT",
+            spdx_id=DOCUMENT_SPDX_ID,
             name=self.name,
             data_license="CC0-1.0",
             document_namespace=self.docnamespace,
@@ -51,7 +52,7 @@ class SPDX_ShallowMerger():
         master_doc = Document(creation_info)
 
         package = Package(
-            spdx_id=self.docnamespace + "#SPDXRef-DOCUMENT",
+            spdx_id=f"SPDXRef-{self.name}-1.0",
             name=self.name,
             download_location=SpdxNoAssertion(),
         )
