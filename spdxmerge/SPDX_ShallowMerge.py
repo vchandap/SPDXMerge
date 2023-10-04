@@ -21,17 +21,23 @@ from spdx_tools.spdx.model import (
 )
 
 class SPDX_ShallowMerger():
-    def __init__(self,doc_list=None,docnamespace=None,name=None,author=None,
+    def __init__(self,doc_list=None,docnamespace=None,name=None,authortype=None,author=None,
                  email=None,suppliertype=None, supplier=None):
         self.doc_list = doc_list
         self.docnamespace = docnamespace
         self.name = name
+        self.authortype = authortype
         self.author = author
         self.emailaddr = email
         self.suppliertype = suppliertype
         self.supplier = supplier
 
     def create_document(self):
+        if self.authortype in ["P", "p"]:
+            creator=[Actor(ActorType.PERSON, self.author, self.emailaddr)]
+        else:
+            creator=[Actor(ActorType.ORGANIZATION, self.author, self.emailaddr)]
+
         external_references = []
         for idx, doc in enumerate(self.doc_list):
             check_sum = Checksum(ChecksumAlgorithm.SHA1,doc.comment)
@@ -49,7 +55,7 @@ class SPDX_ShallowMerger():
             data_license="CC0-1.0",
             document_namespace=self.docnamespace,
             external_document_refs=external_references,
-            creators=[Actor(ActorType.PERSON, self.author, self.emailaddr)],
+            creators=creator,
             created=datetime.now(),
         )
         master_doc = Document(creation_info)
