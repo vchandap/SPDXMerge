@@ -59,4 +59,10 @@ class SPDX_ShallowMerger():
         package.version = "1.0"
         master_doc.packages = [package]
 
+        master_doc.relationships = [Relationship(
+            spdx_element_id="SPDXRef-DOCUMENT",
+            relationship_type=RelationshipType.DESCRIBES,
+            related_spdx_element_id=f"SPDXRef-{self.name}-1.0",
+        )]
+
         return master_doc
