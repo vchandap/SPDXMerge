@@ -20,16 +20,19 @@ from spdxmerge.utils import read_docs
 @click.option("--author", prompt="SBoM Author name", required=True, help="Author who is writing SBoM")
 @click.option("--email", prompt="SBoM author email address", help="Email address of the author")
 @click.option("--docnamespace", prompt="Document namespace", help="URL where document is stored or organization URL", default="https://spdx.organization.name")
+@click.option("--suppliertype", prompt="Package supplier is single person or organization",
+              help="Enter O for organization, P for single person", type=click.Choice(['P', 'p', 'O','o']), default='O')
+@click.option("--supplier", prompt="Product Supplier", required=True, help="Supplier of product for which SBoM is created")
 @click.option("--filetype", prompt="SBoM output file type SPDX tag value format - T or JSON - J",
               help="Enter T for SPDX tag value format, J for JSON", type=click.Choice(['T', 't', 'J','j']), default='J')
-def main(docpath, name, mergetype, author, email, docnamespace, filetype, outpath = None):
+def main(docpath, name, mergetype, author, email, docnamespace, suppliertype, supplier, filetype, outpath = None):
     """Tool provides option to merge SPDX SBoM files. Provides two options for merging,
     Shallow Merge: New SBoM is created only with external ref links to SBoM files to be merged
     Deep Merge: New SBoM file is created by appending package, relationship, license information
     """
     doc_list = read_docs(docpath)
     merge_type = "shallow" if mergetype == '0' else "deep"
-    doc = create_merged_spdx_document(doc_list, docnamespace, name, author, email, merge_type)
+    doc = create_merged_spdx_document(doc_list, docnamespace, name, author, email, merge_type, suppliertype, supplier)
 
     if filetype in ["T", "t"]:
         out_format = "spdx"

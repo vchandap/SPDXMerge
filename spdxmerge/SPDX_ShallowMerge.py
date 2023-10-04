@@ -21,12 +21,15 @@ from spdx_tools.spdx.model import (
 )
 
 class SPDX_ShallowMerger():
-    def __init__(self,doc_list=None,docnamespace=None,name=None,author=None,email=None):
+    def __init__(self,doc_list=None,docnamespace=None,name=None,author=None,
+                 email=None,suppliertype=None, supplier=None):
         self.doc_list = doc_list
         self.docnamespace = docnamespace
         self.name = name
         self.author = author
         self.emailaddr = email
+        self.suppliertype = suppliertype
+        self.supplier = supplier
 
     def create_document(self):
         external_references = []
@@ -57,6 +60,12 @@ class SPDX_ShallowMerger():
             download_location=SpdxNoAssertion(),
         )
         package.version = "1.0"
+
+        if self.suppliertype in ["P", "p"]:
+            package.supplier = Actor(ActorType.PERSON, self.supplier, self.emailaddr)
+        else:
+            package.supplier = Actor(ActorType.ORGANIZATION, self.supplier, self.emailaddr)
+
         master_doc.packages = [package]
 
         master_doc.relationships = [Relationship(
